@@ -16,6 +16,23 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Controller('users')
 export class UsersController {
+  // to define the constructor of the class
+  // and to inject the UsersService into the controller
+  // we can use the constructor to create an instance of the UsersService
+  // and then use it in the methods of the controller
+  // this is called dependency injection
+  // and it is a design pattern that allows us to create loosely coupled code
+  // which is easier to test and maintain
+  // we can also use the @Injectable() decorator to make the UsersService injectable
+  // and then we can use it in other controllers as well
+  // for now, we will just use it in this controller
+  // so we will create a private property called usersService
+  // and then we will assign it to the instance of the UsersService
+  // that we create in the constructor
+  // this way, we can use the usersService property in all the methods of the controller
+  constructor(private usersService: UsersService) {}
+
+  // we are going to create a GET endpoint to get all users
   /**@Get(':isMarried')
   getUsersByMaritalStatus(
     @Param('isMarried', ParseBoolPipe) isMarried?: boolean,
@@ -42,10 +59,9 @@ export class UsersController {
     // the case that the values have not been provided in request
     @Query('age', new DefaultValuePipe(0), ParseIntPipe) age?: number,
   ) {
-    const usersService = new UsersService();
     console.log(gender, age);
     console.log(limit, page);
-    return usersService.getAllUsers();
+    return this.usersService.getAllUsers();
   }
 
   // lets say we want to use pipes to manage pagination of users
@@ -62,9 +78,10 @@ To support both URLs—with and without gender—you need to define two separate
   getUsersByMaritalStatus(
     @Param() param?: GetUserParamDto, // we are reading the isMarried parameter from the url
   ) {
-    const usersService = new UsersService();
+    //since we have injected the UsersService in the constructor, we can use it here
+    //const usersService = new UsersService();
     console.log(param?.isMarried);
-    return usersService.getUsersByMaritalStatus(param?.isMarried);
+    return this.usersService.getUsersByMaritalStatus(param?.isMarried);
   }
 
   @Get(':id') // GET /users/:id - get user by id
@@ -73,11 +90,11 @@ To support both URLs—with and without gender—you need to define two separate
     //@Param('name') name: string,
     //@Param('gender') gender?: string,// the gender is optional
   ) {
-    const usersService = new UsersService();
+    //const usersService = new UsersService();
     //console.log(id, name, gender);
     console.log(typeof id);
     console.log(id);
-    return usersService.getUserById(id); // you can also just add a +id to convert string to number
+    return this.usersService.getUserById(id); // you can also just add a +id to convert string to number
   }
 
   // we are going to analyze the use of pipes in the next section
@@ -96,13 +113,12 @@ To support both URLs—with and without gender—you need to define two separate
   @Post()
   // since we are using the ValidationPipe globally in main.ts, we don't need to use it here
   createUser(@Body() user: CreateUserDto) {
-    const usersService = new UsersService();
     console.log(user);
     console.log(typeof user);
     console.log(user instanceof CreateUserDto); // this will return true
     // this is because we are using the transform option in the ValidationPipe
     // which will automatically transform the payloads to be objects typed according to their DTO classes
-    return usersService.createUser({
+    return this.usersService.createUser({
       id: user.id,
       name: user.name,
       age: user.age,
@@ -119,9 +135,8 @@ To support both URLs—with and without gender—you need to define two separate
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateUserDto,
   ) {
-    const usersService = new UsersService();
     console.log(body);
-    return usersService.updateUser({ ...body, id });
+    return this.usersService.updateUser({ ...body, id });
   }
 }
 
