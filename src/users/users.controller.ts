@@ -128,6 +128,8 @@ To support both URLs—with and without gender—you need to define two separate
       name: user.name,
       age: user.age,
       isMarried: user.isMarried,
+      password: user.password, // or you can generate a random password here
+      email: user.email,
     });
   }
 

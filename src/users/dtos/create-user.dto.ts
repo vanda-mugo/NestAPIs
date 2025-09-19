@@ -39,6 +39,15 @@ export class CreateUserDto {
 
   @IsBoolean({ message: 'isMarried must be a boolean' })
   isMarried: boolean;
+
+  @IsString({ message: 'Password must be a string' })
+  @MinLength(6, { message: 'Password must be at least 6 characters long' })
+  @IsNotEmpty({ message: 'Password is required' })
+  password: string;
+
+  @IsOptional()
+  @IsString({ message: 'Email must be a string' })
+  email?: string;
 }
 
 //you can see the list of available validators when you type @Is in your IDE
