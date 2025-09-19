@@ -68,11 +68,16 @@ export class UsersController {
 
   /**
    * 
-   * @param id If you define your route as /users/:id/:name/:gender, NestJS expects all three parameters to be present in the URL. If you call the endpoint without the gender part (e.g., /users/1/John), it will not match the route, so your controller method will not be called and you won't get a reply.
+   * @param id If you define your route as /users/:id/:name/:gender, NestJS expects all three parameters 
+   * to be present in the URL. If you call the endpoint without the gender part (e.g., /users/1/John), 
+   * it will not match the route, so your controller method will not be called and you won't get a reply.
 
 To support both URLs—with and without gender—you need to define two separate routes in your controller:
    * @returns 
    */
+
+  // in this case the dynamic route :isMarried is optional and also commented out because we may have
+  // the id parameter in the url which  in this case may cause a conflict
 
   @Get(':isMarried')
   getUsersByMaritalStatus(

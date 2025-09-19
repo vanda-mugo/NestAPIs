@@ -7,13 +7,13 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // this will remove any properties that are not in the dto
-      forbidNonWhitelisted: true, // this will throw an error if any properties are not in the dto
+      forbidNonWhitelisted: true, // this will throw an error if any properties are not in the dto are sent with request
       transform: true, // this will automatically transform the payloads to be objects typed according to their DTO classes
     }),
   );
   await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap();
+bootstrap().catch((error) => console.error(error));
 // Here, we are using the ValidationPipe globally to validate all incoming requests
 // you can also use the ValidationPipe locally in the controller or in the method
 // but using it globally is a better approach as it ensures that all incoming requests are validated
