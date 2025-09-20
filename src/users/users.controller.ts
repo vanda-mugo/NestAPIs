@@ -31,6 +31,10 @@ export class UsersController {
   // that we create in the constructor
   // this way, we can use the usersService property in all the methods of the controller
   constructor(private usersService: UsersService) {}
+  // what this does is that whenever an instance of UsersController is created
+  // NestJS will automatically create an instance of UsersService
+  // and pass it to the constructor of UsersController
+  // so we can use the usersService property in all the methods of the controller
 
   // we are going to create a GET endpoint to get all users
   /**@Get(':isMarried')
@@ -89,17 +93,15 @@ To support both URLs—with and without gender—you need to define two separate
     return this.usersService.getUsersByMaritalStatus(param?.isMarried);
   }
 
-  @Get(':id') // GET /users/:id - get user by id
-  getUserById(
-    @Param('id', ParseIntPipe) id: number, // you can also just read the value of one parameter
-    //@Param('name') name: string,
-    //@Param('gender') gender?: string,// the gender is optional
+  @Get(':email') // GET /users/:email - get user by email
+  getUserByEmail(
+    @Param('email') email: string, // you can also just read the value of one parameter
   ) {
     //const usersService = new UsersService();
     //console.log(id, name, gender);
-    console.log(typeof id);
-    console.log(id);
-    return this.usersService.getUserById(id); // you can also just add a +id to convert string to number
+    console.log(typeof email);
+    console.log(email);
+    return this.usersService.getUserByEmail(email);
   }
 
   // we are going to analyze the use of pipes in the next section
@@ -123,27 +125,17 @@ To support both URLs—with and without gender—you need to define two separate
     console.log(user instanceof CreateUserDto); // this will return true
     // this is because we are using the transform option in the ValidationPipe
     // which will automatically transform the payloads to be objects typed according to their DTO classes
-    return this.usersService.createUser({
-      id: user.id,
-      name: user.name,
-      age: user.age,
-      isMarried: user.isMarried,
-      password: user.password, // or you can generate a random password here
-      email: user.email,
-    });
+    return this.usersService.createUser(user);
   }
 
   // inthe @Patch() and @Put() methods, you can also use the same CreateUserDto
   // but you need to make all the properties optional in the dto
   // so that you can update only the properties that you want to update
   // we shall use mapped types and partial types to achieve this in the next section
-  @Patch(':id')
-  updateUserObject(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() body: UpdateUserDto,
-  ) {
+  @Patch(':email') // PATCH /users/:email - update user by email
+  updateUserObject(@Param('email') email: string, @Body() body: UpdateUserDto) {
     console.log(body);
-    return this.usersService.updateUser({ ...body, id });
+    return this.usersService.updateUser({ ...body, email });
   }
 }
 

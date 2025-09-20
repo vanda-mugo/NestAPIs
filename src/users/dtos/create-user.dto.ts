@@ -13,6 +13,8 @@ import {
   MinLength,
   IsOptional,
   IsBoolean,
+  MaxLength,
+  IsEmail,
 } from 'class-validator';
 // validating a dto with class-validator and class-transformer
 // you can also use other validation libraries like joi, yup, zod etc
@@ -24,16 +26,19 @@ import {
 // and then validate the class instance
 // we will see how to do that in the controller section
 export class CreateUserDto {
-  @IsNumber({}, { message: 'ID must be a number' })
-  @IsNotEmpty({ message: 'ID is required' })
-  id: number;
+  @IsString({ message: 'First name must be a string' })
+  @MinLength(3, { message: 'First name must be at least 3 characters long' })
+  @IsNotEmpty({ message: 'First name is required' })
+  @MaxLength(100, { message: 'First name must be at most 50 characters long' })
+  firstname: string;
 
-  @IsString({ message: 'Name must be a string' })
-  @MinLength(3, { message: 'Name must be at least 3 characters long' })
-  @IsNotEmpty({ message: 'Name is required' })
-  name: string;
+  @IsString({ message: 'Last name must be a string' })
+  @MinLength(3, { message: 'Last name must be at least 3 characters long' })
+  @MaxLength(100, { message: 'Last name must be at most 100 characters long' })
+  @IsNotEmpty({ message: 'Last name is required' })
+  lastname: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber({}, { message: 'Age must be a number' })
   age: number;
 
@@ -43,14 +48,27 @@ export class CreateUserDto {
   @IsString({ message: 'Password must be a string' })
   @MinLength(6, { message: 'Password must be at least 6 characters long' })
   @IsNotEmpty({ message: 'Password is required' })
+  @MaxLength(20, { message: 'Password must be at most 20 characters long' })
   password: string;
 
-  @IsOptional()
+  @IsNotEmpty()
+  @IsEmail()
   @IsString({ message: 'Email must be a string' })
-  email?: string;
+  @IsNotEmpty({ message: 'Email is required' })
+  @MaxLength(50, { message: 'Email must be at most 50 characters long' })
+  email: string;
+
+  @IsOptional()
+  @IsString({ message: 'Gender must be a string' })
+  @MaxLength(10, { message: 'Gender must be at most 10 characters long' })
+  gender?: string;
 }
 
 //you can see the list of available validators when you type @Is in your IDE
 // you can also create your own custom validators
 // for more information, check the official documentation of class-validator
 // https://github.com/typestack/class-validator
+// note by there is no unique validator in class-validator
+// you can enforce the unique constraint at the database level
+// by adding a unique constraint to the email column in the user entity
+// see the user.entity.ts file for more details

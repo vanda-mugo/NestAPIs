@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { TweetsService } from './tweets.service';
 
 @Controller('tweets')
@@ -24,12 +24,12 @@ export class TweetsController {
   // YOU HAVE TO DEFINE TWO ROUTES
   // ONE FOR /tweets AND ONE FOR /tweets/:userId
   // BUT YOU CAN HANDLE BOTH ROUTES IN THE SAME METHOD
-  // BY CHECKING IF THE userId PARAMETER IS PRESENT OR NOT
-  @Get(':userId')
+  // BY CHECKING IF THE userEmail PARAMETER IS PRESENT OR NOT
+  @Get(':userEmail')
   // public is optional in TypeScript
-  //In your current setup, marking userId as optional is not necessary, because the route always expects it.
-  public getTweets(@Param('userId', ParseIntPipe) userId: number) {
-    // this route should handle any request that comes to /tweets or /tweets/:userId
+  //In your current setup, marking userEmail as optional is not necessary, because the route always expects it.
+  public getTweets(@Param('userEmail') userEmail: string) {
+    // this route should handle any request that comes to /tweets or /tweets/:userEmail
     //lets say we want to display the user from the usermodule
     // we have to export the UsersService from the usermodule
     // and then import it here in the tweets module
@@ -37,8 +37,8 @@ export class TweetsController {
     // and then use it in the getTweets method
     // for now, we will just use the TweetsService to get all tweets
     // note by you can only export a provider as you cannot export a controller
-    if (userId) {
-      return this.tweetsService.getTweetsByUserId(userId);
+    if (userEmail) {
+      return this.tweetsService.getTweetsByUserEmail(userEmail);
     }
   }
 }

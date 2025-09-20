@@ -5,30 +5,60 @@ import { UsersService } from '../users/users.service';
 export class TweetsService {
   constructor(private readonly usersService: UsersService) {}
 
-  tweets: { text: string; userId: number; date: Date }[] = [
-    { text: 'Hello World', userId: 1, date: new Date() },
-    { text: 'NestJS is great!', userId: 2, date: new Date() },
-    { text: 'TypeScript rocks!', userId: 1, date: new Date() },
-    { text: 'I love programming!', userId: 3, date: new Date() },
-    { text: 'Dependency Injection is powerful!', userId: 1, date: new Date() },
-    { text: 'Modules are awesome!', userId: 1, date: new Date() },
-    { text: 'Controllers handle requests!', userId: 1, date: new Date() },
+  tweets: { text: string; userEmail: string; date: Date }[] = [
+    { text: 'Hello World', userEmail: 'alice@example.com', date: new Date() },
+    {
+      text: 'NestJS is great!',
+      userEmail: 'bob@example.com',
+      date: new Date(),
+    },
+    {
+      text: 'TypeScript rocks!',
+      userEmail: 'alice@example.com',
+      date: new Date(),
+    },
+    {
+      text: 'I love programming!',
+      userEmail: 'charlie@example.com',
+      date: new Date(),
+    },
+    {
+      text: 'Dependency Injection is powerful!',
+      userEmail: 'alice@example.com',
+      date: new Date(),
+    },
+    {
+      text: 'Modules are awesome!',
+      userEmail: 'bob@example.com',
+      date: new Date(),
+    },
+    {
+      text: 'Controllers handle requests!',
+      userEmail: 'charlie@example.com',
+      date: new Date(),
+    },
   ];
 
   getAllTweets() {
     return this.tweets;
   }
 
-  getTweetsByUserId(userId: number) {
-    const user = this.usersService.getUserById(userId);
+  getTweetsByUserEmail(email: string) {
+    const user = this.usersService.getUserByEmail(email);
     if (!user) {
-      return `User with id ${userId} not found`;
+      return `User with email ${email} not found`;
     }
-    const tweets = this.tweets.filter((tweet) => tweet.userId === userId);
+    const tweets = this.tweets.filter(
+      (tweet) => tweet.userEmail === user.email,
+    );
 
     // map iterator array method to return only text and date of the tweet along with the name of the user
     const response = tweets.map((tweet) => {
-      return { text: tweet.text, date: tweet.date, name: user.name };
+      return {
+        text: tweet.text,
+        date: tweet.date,
+        name: user.firstname + ' ' + user.lastname,
+      };
     });
     return response;
   }

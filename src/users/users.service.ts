@@ -1,95 +1,110 @@
 //import { Injectable } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './user.entity';
+import { Repository } from 'typeorm';
+import { CreateUserDto } from './dtos/create-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
   users: {
-    id: number;
-    name: string;
+    firstname: string;
+    lastname: string;
     age: number;
     isMarried: boolean;
     password: string;
-    email?: string;
+    email: string;
+    gender?: string;
   }[] = [
     {
-      id: 1,
-      name: 'Alice',
+      firstname: 'Alice',
+      lastname: 'Smith',
       age: 30,
       isMarried: true,
       password: 'alice123',
       email: 'alice@example.com',
+      gender: 'female',
     },
     {
-      id: 2,
-      name: 'Bob',
+      firstname: 'Bob',
+      lastname: 'Johnson',
       age: 25,
       isMarried: false,
       password: 'bob123',
       email: 'bob@example.com',
     },
     {
-      id: 3,
-      name: 'Charlie',
+      firstname: 'Charlie',
+      lastname: 'Brown',
       age: 35,
       isMarried: true,
       password: 'charlie123',
       email: 'charlie@example.com',
     },
     {
-      id: 4,
-      name: 'David',
+      firstname: 'David',
+      lastname: 'Williams',
       age: 28,
       isMarried: false,
       password: 'david123',
       email: 'david@example.com',
     },
     {
-      id: 5,
-      name: 'Eve',
+      firstname: 'Eve',
+      lastname: 'Johnson',
       age: 22,
       isMarried: false,
       password: 'eve123',
       email: 'eve@example.com',
     },
     {
-      id: 6,
-      name: 'Frank',
+      firstname: 'Frank',
+      lastname: 'Miller',
       age: 40,
       isMarried: true,
       password: 'frank123',
       email: 'frank@example.com',
     },
     {
-      id: 7,
-      name: 'Grace',
+      firstname: 'Grace',
+      lastname: 'Hopper',
       age: 27,
       isMarried: false,
       password: 'grace123',
       email: 'grace@example.com',
     },
     {
-      id: 8,
-      name: 'Hannah',
+      firstname: 'Hannah',
+      lastname: 'Williams',
       age: 32,
       isMarried: true,
       password: 'hannah123',
       email: 'hannah@example.com',
     },
     {
-      id: 9,
-      name: 'Ivy',
+      firstname: 'Ivy',
+      lastname: 'Johnson',
       age: 29,
       isMarried: false,
       password: 'ivy123',
       email: 'ivy@example.com',
     },
-    { id: 10, name: 'Jack', age: 31, isMarried: true, password: 'jack123' },
+    {
+      firstname: 'Jack',
+      lastname: 'Daniels',
+      age: 31,
+      isMarried: true,
+      password: 'jack123',
+      email: 'jack@example.com',
+    },
   ];
 
   getAllUsers() {
@@ -100,21 +115,27 @@ export class UsersService {
     return this.users;
   }
 
-  getUserById(id: number) {
-    console.log(id);
-    return this.users.find((user) => user.id === id);
+  getUserByEmail(email: string) {
+    console.log(email);
+    return this.users.find((user) => user.email === email);
   }
 
-  createUser(user: {
-    id: number;
-    name: string;
-    age: number;
-    isMarried: boolean;
-    password: string;
-    email?: string;
-  }) {
-    this.users.push(user);
-    return `User created successfully: ${JSON.stringify(user)}`;
+  public async createUser(user: CreateUserDto) {
+    // validate if user with the same email already exists , this is in lue to the entity definition
+    const existingUser = await this.userRepository.findOne({
+      where: { email: user.email },
+    });
+    // if user exists, throw an error
+    if (existingUser) {
+      throw new Error('User with this email already exists');
+    }
+    // if user does not exist, create a new user , this is just an object
+    // note by you can perform additional operations here like hashing the password before saving to the database
+    // create a new user instance
+    const newUser = this.userRepository.create(user);
+    // save the new user to the database
+    await this.userRepository.save(newUser);
+    return newUser;
   }
 
   getUsersByMaritalStatus(isMarried?: boolean) {
@@ -129,18 +150,21 @@ export class UsersService {
   // }
 
   updateUser(user: {
-    id: number;
-    name?: string;
+    firstname?: string;
+    lastname?: string;
     age?: number;
     isMarried?: boolean;
     password?: string;
     email?: string;
   }) {
-    const existingUser = this.users.find((u) => u.id === user.id);
+    const existingUser = this.users.find((u) => u.email === user.email);
     if (existingUser) {
       // Update only the provided fields
-      if (user.name !== undefined) {
-        existingUser.name = user.name;
+      if (user.firstname !== undefined) {
+        existingUser.firstname = user.firstname;
+      }
+      if (user.lastname !== undefined) {
+        existingUser.lastname = user.lastname;
       }
       if (user.age !== undefined) {
         existingUser.age = user.age;
@@ -150,7 +174,7 @@ export class UsersService {
       }
       return `User updated successfully: ${JSON.stringify(existingUser)}`;
     } else {
-      return `User with ID ${user.id} not found.`;
+      return `User with Email ${user.email} not found.`;
     }
   }
 }
