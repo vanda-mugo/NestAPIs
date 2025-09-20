@@ -38,7 +38,7 @@ export class TweetsController {
     // for now, we will just use the TweetsService to get all tweets
     // note by you can only export a provider as you cannot export a controller
     if (userEmail) {
-      return this.tweetsService.getTweetsByUserEmail(userEmail);
+      //return this.tweetsService.getTweetsByUserEmail(userEmail);
     }
   }
 }

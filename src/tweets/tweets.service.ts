@@ -43,6 +43,7 @@ export class TweetsService {
     return this.tweets;
   }
 
+  /*
   getTweetsByUserEmail(email: string) {
     const user = this.usersService.getUserByEmail(email);
     if (!user) {
@@ -62,6 +63,7 @@ export class TweetsService {
     });
     return response;
   }
+  */
 }
 
 /**

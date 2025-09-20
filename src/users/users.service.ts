@@ -15,109 +15,14 @@ export class UsersService {
     private userRepository: Repository<User>,
   ) {}
 
-  users: {
-    firstname: string;
-    lastname: string;
-    age: number;
-    isMarried: boolean;
-    password: string;
-    email: string;
-    gender?: string;
-  }[] = [
-    {
-      firstname: 'Alice',
-      lastname: 'Smith',
-      age: 30,
-      isMarried: true,
-      password: 'alice123',
-      email: 'alice@example.com',
-      gender: 'female',
-    },
-    {
-      firstname: 'Bob',
-      lastname: 'Johnson',
-      age: 25,
-      isMarried: false,
-      password: 'bob123',
-      email: 'bob@example.com',
-    },
-    {
-      firstname: 'Charlie',
-      lastname: 'Brown',
-      age: 35,
-      isMarried: true,
-      password: 'charlie123',
-      email: 'charlie@example.com',
-    },
-    {
-      firstname: 'David',
-      lastname: 'Williams',
-      age: 28,
-      isMarried: false,
-      password: 'david123',
-      email: 'david@example.com',
-    },
-    {
-      firstname: 'Eve',
-      lastname: 'Johnson',
-      age: 22,
-      isMarried: false,
-      password: 'eve123',
-      email: 'eve@example.com',
-    },
-    {
-      firstname: 'Frank',
-      lastname: 'Miller',
-      age: 40,
-      isMarried: true,
-      password: 'frank123',
-      email: 'frank@example.com',
-    },
-    {
-      firstname: 'Grace',
-      lastname: 'Hopper',
-      age: 27,
-      isMarried: false,
-      password: 'grace123',
-      email: 'grace@example.com',
-    },
-    {
-      firstname: 'Hannah',
-      lastname: 'Williams',
-      age: 32,
-      isMarried: true,
-      password: 'hannah123',
-      email: 'hannah@example.com',
-    },
-    {
-      firstname: 'Ivy',
-      lastname: 'Johnson',
-      age: 29,
-      isMarried: false,
-      password: 'ivy123',
-      email: 'ivy@example.com',
-    },
-    {
-      firstname: 'Jack',
-      lastname: 'Daniels',
-      age: 31,
-      isMarried: true,
-      password: 'jack123',
-      email: 'jack@example.com',
-    },
-  ];
-
-  getAllUsers() {
+  async getAllUsers() {
     console.log('Getting all users');
-    if (this.authService.isAuthenticated === false) {
-      return `You are not authorized to access this resource. Please login first.`;
-    }
-    return this.users;
+    return await this.userRepository.find();
   }
 
-  getUserByEmail(email: string) {
+  async getUserByEmail(email: string) {
     console.log(email);
-    return this.users.find((user) => user.email === email);
+    return await this.userRepository.findOne({ where: { email } });
   }
 
   public async createUser(user: CreateUserDto) {
@@ -138,18 +43,20 @@ export class UsersService {
     return newUser;
   }
 
-  getUsersByMaritalStatus(isMarried?: boolean) {
+  async getUsersByMaritalStatus(isMarried?: boolean) {
     if (isMarried === undefined) {
-      return this.users;
+      return await this.userRepository.find();
     }
-    return this.users.filter((user) => user.isMarried === isMarried);
+    return await this.userRepository.find({
+      where: { isMarried },
+    });
   }
 
   // getUsersByAge(age: number) {
   //   return this.users.filter((user) => user.age === age);
   // }
 
-  updateUser(user: {
+  async updateUser(user: {
     firstname?: string;
     lastname?: string;
     age?: number;
@@ -157,25 +64,20 @@ export class UsersService {
     password?: string;
     email?: string;
   }) {
-    const existingUser = this.users.find((u) => u.email === user.email);
+    // find user by email
+    const existingUser = await this.userRepository.findOne({
+      where: { email: user.email },
+    });
     if (existingUser) {
       // Update only the provided fields
-      if (user.firstname !== undefined) {
-        existingUser.firstname = user.firstname;
-      }
-      if (user.lastname !== undefined) {
-        existingUser.lastname = user.lastname;
-      }
-      if (user.age !== undefined) {
-        existingUser.age = user.age;
-      }
-      if (user.isMarried !== undefined) {
-        existingUser.isMarried = user.isMarried;
-      }
-      return `User updated successfully: ${JSON.stringify(existingUser)}`;
+      Object.assign(existingUser, user);
     } else {
       return `User with Email ${user.email} not found.`;
     }
+
+    // save the updated user to the database
+    await this.userRepository.save(existingUser);
+    return `User with Email ${user.email} updated successfully: ${JSON.stringify(existingUser)}`;
   }
 }
 

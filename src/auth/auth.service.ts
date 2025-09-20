@@ -15,6 +15,7 @@ export class AuthService {
   // we can do this by checking if the user is authenticated or not
   // if the user is not authenticated, we can return a 401 Unauthorized error
 
+  /*
   login(email: string, password: string): string {
     if (!this.usersService.users || !Array.isArray(this.usersService.users)) {
       return `Invalid credentials`;
@@ -29,4 +30,5 @@ export class AuthService {
     }
     return `Invalid credentials, user does not exist`;
   }
+    */
 }
