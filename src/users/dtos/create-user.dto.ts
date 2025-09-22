@@ -10,10 +10,11 @@ import {
   IsNotEmpty,
   IsString,
   MinLength,
-  IsBoolean,
   MaxLength,
   IsEmail,
+  IsOptional,
 } from 'class-validator';
+import { CreateProfileDto } from 'src/profile/dtos/create.profile.dto';
 // validating a dto with class-validator and class-transformer
 // you can also use other validation libraries like joi, yup, zod etc
 // but class-validator and class-transformer are the most popular ones in the NestJS community
@@ -30,9 +31,6 @@ export class CreateUserDto {
   @MaxLength(25, { message: 'Username must be at most 25 characters long' })
   username: string;
 
-  @IsBoolean({ message: 'isMarried must be a boolean' })
-  isMarried: boolean;
-
   @IsString({ message: 'Password must be a string' })
   @MinLength(6, { message: 'Password must be at least 6 characters long' })
   @IsNotEmpty({ message: 'Password is required' })
@@ -45,6 +43,9 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Email is required' })
   @MaxLength(50, { message: 'Email must be at most 50 characters long' })
   email: string;
+
+  @IsOptional()
+  profile: CreateProfileDto | null;
 }
 
 //you can see the list of available validators when you type @Is in your IDE

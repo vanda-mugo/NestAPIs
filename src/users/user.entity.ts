@@ -4,9 +4,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Profile } from 'src/profile/profile.entity';
 
 /**
  * note by that the user and the create user dto have to be in sync
@@ -49,6 +52,22 @@ export class User {
     // default: 'email@example.com', // you can also set a default value for the column
   })
   email: string;
+
+  // WE WANT to create a one to one from user table to profile table
+  // this will create a profileId column in the user table
+  // and establish a foreign key relationship with the profile table
+  // so note that the profile is optional when creating a user
+  // you can create a user without a profile
+  // but you cannot create a profile without a user
+  // this is because the user is the owner of the relationship
+  // if this one-to-one relationship was used in profile entity that would mean that
+  // this would mean that the profile is the owner of the relationship
+  // and that would create a userId column in the profile table
+  // and establish a foreign key relationship with the user table
+  // in this case the user is the owner of the relationsip
+  @OneToOne(() => Profile)
+  @JoinColumn()
+  profile?: Profile;
 
   @CreateDateColumn()
   createdAt: Date;
