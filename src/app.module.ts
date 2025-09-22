@@ -5,7 +5,7 @@ import { UsersModule } from './users/users.module';
 import { TweetsModule } from './tweets/tweets.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/user.entity';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -20,11 +20,14 @@ import { User } from './users/user.entity';
         username: 'postgres',
         password: '13881388Vanda',
         database: 'nestjs',
-        entities: [User], // add your entities here to make typeorm aware of them
+        autoLoadEntities: true, // this will automatically load entities that are registered through the forFeature() method
+        // alternatively you can specify the entities here
+        //entities: [User, Profile], // add your entities here to make typeorm aware of them
         synchronize: true, // recommend to be false in production
         inject: [],
       }),
     }),
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [AppService],

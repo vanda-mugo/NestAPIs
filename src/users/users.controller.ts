@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { GetUserParamDto } from './dtos/get-user-param.dto';
+//import { GetUserParamDto } from './dtos/get-user-param.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Controller('users')
@@ -83,6 +83,7 @@ To support both URLs—with and without gender—you need to define two separate
   // in this case the dynamic route :isMarried is optional and also commented out because we may have
   // the id parameter in the url which  in this case may cause a conflict
 
+  /*
   @Get(':isMarried')
   getUsersByMaritalStatus(
     @Param() param?: GetUserParamDto, // we are reading the isMarried parameter from the url
@@ -92,6 +93,7 @@ To support both URLs—with and without gender—you need to define two separate
     console.log(param?.isMarried);
     return this.usersService.getUsersByMaritalStatus(param?.isMarried);
   }
+  */
 
   @Get(':email') // GET /users/:email - get user by email
   getUserByEmail(

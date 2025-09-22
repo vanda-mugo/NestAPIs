@@ -7,11 +7,9 @@
 
 import 'reflect-metadata';
 import {
-  IsNumber,
   IsNotEmpty,
   IsString,
   MinLength,
-  IsOptional,
   IsBoolean,
   MaxLength,
   IsEmail,
@@ -26,21 +24,11 @@ import {
 // and then validate the class instance
 // we will see how to do that in the controller section
 export class CreateUserDto {
-  @IsString({ message: 'First name must be a string' })
-  @MinLength(3, { message: 'First name must be at least 3 characters long' })
-  @IsNotEmpty({ message: 'First name is required' })
-  @MaxLength(100, { message: 'First name must be at most 50 characters long' })
-  firstname: string;
-
-  @IsString({ message: 'Last name must be a string' })
-  @MinLength(3, { message: 'Last name must be at least 3 characters long' })
-  @MaxLength(100, { message: 'Last name must be at most 100 characters long' })
-  @IsNotEmpty({ message: 'Last name is required' })
-  lastname: string;
-
-  @IsNotEmpty()
-  @IsNumber({}, { message: 'Age must be a number' })
-  age: number;
+  @IsString({ message: 'Username must be a string' })
+  @MinLength(3, { message: 'Username must be at least 3 characters long' })
+  @IsNotEmpty({ message: 'Username is required' })
+  @MaxLength(25, { message: 'Username must be at most 25 characters long' })
+  username: string;
 
   @IsBoolean({ message: 'isMarried must be a boolean' })
   isMarried: boolean;
@@ -57,11 +45,6 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Email is required' })
   @MaxLength(50, { message: 'Email must be at most 50 characters long' })
   email: string;
-
-  @IsOptional()
-  @IsString({ message: 'Gender must be a string' })
-  @MaxLength(10, { message: 'Gender must be at most 10 characters long' })
-  gender?: string;
 }
 
 //you can see the list of available validators when you type @Is in your IDE

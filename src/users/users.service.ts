@@ -43,6 +43,7 @@ export class UsersService {
     return newUser;
   }
 
+  /*
   async getUsersByMaritalStatus(isMarried?: boolean) {
     if (isMarried === undefined) {
       return await this.userRepository.find();
@@ -51,6 +52,7 @@ export class UsersService {
       where: { isMarried },
     });
   }
+  */
 
   // getUsersByAge(age: number) {
   //   return this.users.filter((user) => user.age === age);
