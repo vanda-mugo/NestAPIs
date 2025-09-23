@@ -10,7 +10,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Profile } from 'src/profile/profile.entity';
-
 /**
  * note by that the user and the create user dto have to be in sync
  * this is to ensure we do not include unecessary properties in the user entity
@@ -65,7 +64,15 @@ export class User {
   // and that would create a userId column in the profile table
   // and establish a foreign key relationship with the user table
   // in this case the user is the owner of the relationsip
-  @OneToOne(() => Profile)
+
+  //eager: true means that whenever we fetch a user, the associated profile will be fetched automatically
+  //cascade: true means that any operations (like save, update, delete) performed on the user will also be cascaded to the associated profile
+  //nullable: true means that the profile can be null, i.e., a user may not have an associated profile
+  @OneToOne(() => Profile, (profile) => profile.user, {
+    cascade: true,
+    eager: true,
+    nullable: true,
+  })
   @JoinColumn()
   profile?: Profile;
 
