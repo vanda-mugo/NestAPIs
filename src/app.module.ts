@@ -7,7 +7,11 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProfileModule } from './profile/profile.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { appConfig } from './config/app.config';
+import appConfig from './config/app.config';
+import databaseConfig from './config/database.config';
+
+// Determine the environment and load the corresponding .env file
+// Possible values for NODE_ENV: 'development', 'test', 'production'
 
 const ENV = process.env.NODE_ENV;
 console.log('Current Environment:', ENV);
@@ -27,7 +31,7 @@ if (ENV === 'development') {
     ConfigModule.forRoot({
       isGlobal: true, // this will make the ConfigModule available globally
       envFilePath: !ENV ? '.env' : `.env.${ENV.trim()}`,
-      load: [appConfig],
+      load: [appConfig, databaseConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
